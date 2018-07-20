@@ -1,0 +1,190 @@
+<!doctype html>
+<html>
+<head>
+ 
+   
+<!--script de boostrap 3-->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="https://js.arcgis.com/3.24/dijit/themes/claro/claro.css">
+<link rel="stylesheet" href="https://js.arcgis.com/3.24/esri/css/esri.css"> 
+<script src="https://js.arcgis.com/3.24/"></script>
+<script>
+    dojo.require("esri.map");
+    dojo.require("esri.tasks.geometry");
+    dojo.require("esri.geometry");
+    dojo.require("esri.layers.ArcGISDynamicMapServiceLayer");
+    dojo.require("esri.layers.DynamicLayerInfo");
+    dojo.require("esri.layers.FeatureLayer");
+    dojo.require("esri.geometry.geometryEngine");
+
+    var dojoConfig = { isDebug: true };
+    var map = null;
+    var gsvc = null;
+    var qtask = null;
+    var polygon = null;
+    var polygonGraphic = null;
+    var queryGraphic = null;
+    var areas = null;
+    var layer_Minas = null;
+    var url = "https://serverags1.economia.gob.mx/arcgis/rest/services/SDE_SUBDIR/SOLICITUDES__SUBDIR/MapServer";
+    var tkn = "0qfc5ml6x1AtpIXnsuOTBnN7fjKZRMcDar0ZQ_bPLULqKkGLnGBimg8lhP5PvwKOhwfkd_vtsOss8xWkraPirFMAYCMG4mretWF2p7bxfglYglwHxxhWh8lQGVFjBozW3i_1rhQHbB0k_Akjwu4uWQE5rWPCpa9Qpd_B56d7Gvo.";
+
+    function initialize() {
+      map = new esri.Map("map", { 
+        basemap: "topo", 
+        center: [-99.079, 19.423],
+        zoom: 14
+      });
+
+      layer_Minas = new esri.layers.ArcGISDynamicMapServiceLayer(url+"?token="+tkn,{id: "SDE.POLIGONOS_S", opacity:1});
+      layer_Minas.setVisibleLayers([2]);
+      map.addLayer(layer_Minas);
+
+      dojo.connect(map, "onLoad", drawPolygon);
+
+      gsvc = new esri.tasks.GeometryService(url+"/2");
+      qtask = new esri.tasks.QueryTask(url+"/2");
+    }
+
+    function drawPolygon() {
+      var latOffset, lonOffset, center, lat, lon, points;
+
+      var center = map.extent.getCenter();
+      var lat = center.y;
+      var lon = center.x + 500;
+
+      var latOffset = randomIntFromInterval(500,1000);
+      var lonOffset = randomIntFromInterval(500,1000);
+      var points = [
+        new esri.geometry.Point(lon - lonOffset, lat, map.spatialReference),
+        new esri.geometry.Point(lon, lat + latOffset, map.spatialReference),
+        new esri.geometry.Point(lon + lonOffset, lat, map.spatialReference),
+        new esri.geometry.Point(lon, lat - latOffset, map.spatialReference),
+        new esri.geometry.Point(lon - lonOffset, lat, map.spatialReference)
+        /*new esri.geometry.Point(lon - 3 * lonOffset, lat + latOffset, map.spatialReference),
+        new esri.geometry.Point(lon - 4 * lonOffset, lat, map.spatialReference),
+        new esri.geometry.Point(lon - 5 * lonOffset, lat - latOffset, map.spatialReference),
+        new esri.geometry.Point(lon - 1.5 * lonOffset, lat + latOffset, map.spatialReference),
+        new esri.geometry.Point(lon - lonOffset, lat, map.spatialReference)*/
+      ];
+
+      polygon = new esri.geometry.Polygon();
+      polygon.addRing(points);
+      polygon.spatialReference = map.spatialReference;
+
+      var symbol = new esri.symbol.SimpleFillSymbol().setStyle(esri.symbol.SimpleFillSymbol.STYLE_SOLID);
+      symbol.color = [51, 204, 51, 0.3];
+      symbol.outline.color = [128, 128, 128, 0.5];
+      symbol.outline.width = "2px";
+
+      polygonGraphic = new esri.Graphic(polygon, symbol, { keeper: true });
+      var polyLayer = new esri.layers.GraphicsLayer({ id: "SDE.POLIGONOS_S2" });
+      map.addLayer(polyLayer);
+      polyLayer.add(polygonGraphic);
+
+      GetAreas(polygon);
+    }
+
+    function randomIntFromInterval(min,max) { return Math.floor(Math.random()*(max-min+100)+min); }
+
+    function doSimplify() {
+      //simplify the polygon if self-intersecting
+      if (esri.geometry.polygonSelfIntersecting(polygonGraphic.geometry)) {
+        gsvc.simplify([ polygonGraphic.geometry ], simplifyCallback);
+      }
+    }
+
+    function simplifyCallback(geometries) {
+      //alert("Number of Rings returned by Simplify operation = " + geometries[0].rings.length);
+      polygonGraphic.setGeometry(geometries[0]);
+      doQuery(polygonGraphic); // select a ring to do query
+    }
+
+    function doQuery(polygonGraphic) {
+      map.graphics.clear();
+
+      var query = new esri.tasks.Query();
+      query.spatialRelationship = esri.tasks.Query.SPATIAL_REL_INTERSECTS;
+      query.spatialRelationship = esri.tasks.Query.SPATIAL_REL_CONTAINS;
+      query.geometry = polygonGraphic.geometry;
+      query.returnGeometry = true;
+      qtask.execute(query, queryCallback);
+    }
+
+    function queryCallback(featureSet) {
+      var symbol = new esri.symbol.SimpleFillSymbol(esri.symbol.SimpleFillSymbol.STYLE_SOLID, new esri.symbol.SimpleLineSymbol(esri.symbol.SimpleLineSymbol.STYLE_SOLID, new dojo.Color([0,0,255,0.65]), 2), new dojo.Color([0,0,255,0.35]));
+      var features = featureSet.features;
+      dojo.forEach(features, function(f) {
+        f.setSymbol(symbol);
+        map.graphics.add(f);
+      });
+    }
+
+
+    function GetAreas(geo){
+        var geographicGeometries = [];
+        geographicGeometries.push(esri.geometry.webMercatorToGeographic(geo));  
+        areas = esri.geometry.geodesicAreas(geographicGeometries, esri.Units.HECTARES);
+    }
+
+    //dojo.ready(initialize);
+    setTimeout(function(){mapa = "map";document.getElementById("map").innerHTML = ""; dojo.ready(initialize);}, 1000);
+    
+    
+
+
+
+  </script>
+
+
+
+
+
+
+</head>
+<body>
+	<link href="https://framework-gb.cdn.gob.mx/assets/styles/main.css" rel="stylesheet">
+  	<link rel="stylesheet" type="text/css" href="https://framework-gb.cdn.gob.mx/sso/css/plugin/fiel-sat/1.0/fiel-bootstrap.all.css" />
+  	<script type="text/javascript" language="javascript" src="https://framework-gb.cdn.gob.mx/sso/js/plugin/fiel-sat/1.0/sat-fiel-1.0.0.source.all.js"></script>
+  <!--dentro de este form...poner todo el contenido... ya que este nombre del form es el que busca el bpm para realizar alguna accion-->
+  <form name="approveLoan">
+    <div class="container">
+		<div class="row">
+			<div class="col-md-12">
+		    	<h3>Validación - Terreno Libre</h3>
+		    	<hr class="red">
+		    </div>
+		</div>
+
+		<div class="row">
+		    <div class="col-md-8">
+				<div id="map"></div>
+			</div>
+			<div class="col-md-4">
+				<div class="form-group">
+					<label class="control-label">Indicar si el terreno esta libre</label>
+					<div class="checkbox">
+				
+				
+				      <select cam-variable-name="validaTerreno"
+                      cam-variable-type="String">
+                      <option value="SI">SI</option>
+                      <option value="NO">NO</option>
+                      </select>
+				
+				
+				
+				</div>
+				<div class="form-group">
+					<textarea class="form-control" rows="8" placeholder="Comentarios"></textarea>
+				</div>
+				
+			</div>
+		</div>		
+	</div>
+  </form>
+
+<!--script de boostrap 3-->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</body>
+</html>

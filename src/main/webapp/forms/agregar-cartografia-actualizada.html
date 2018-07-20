@@ -1,0 +1,326 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset=utf-8>
+  <title>Enviar Proposici&oacute;n a t&iacute;tulo</title>
+</head>
+<body>
+
+  <link href="https://framework-gb.cdn.gob.mx/assets/styles/main.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="https://framework-gb.cdn.gob.mx/sso/css/plugin/fiel-sat/1.0/fiel-bootstrap.all.css" />
+<script type="text/javascript" language="javascript" src="https://framework-gb.cdn.gob.mx/sso/js/plugin/fiel-sat/1.0/sat-fiel-1.0.0.source.all.js"></script>
+
+<form role="form" class="form-horizontal">
+  <script cam-script type="text/form-script">
+    $scope.genders = [ 'female', 'male' ];
+	$scope.urls=['http://192.168.104.172:7001/miam/gateway/tareasComunes/consultaDocumento/',
+				'http://192.168.104.172:7001/miam/gateway/tareasComunes/consultaDocumento/',
+				'http://192.168.104.172:7001/miam/gateway/tareasComunes/consultaDocumento/',
+				'http://192.168.104.172:7001/miam/gateway/tareasComunes/consultaDocumento/',
+				'http://192.168.104.172:7001/miam/gateway/tareasComunes/consultaDocumento/',
+				'http://192.168.104.172:7001/miam/gateway/tareasComunes/consultaDocumento/',
+				'http://192.168.104.172:7001/miam/gateway/tareasComunes/consultaDocumento/'];
+    camForm.on('form-loaded', function() {
+           camForm.variableManager.fetchVariable('json');
+         });
+
+
+     camForm.on('variables-fetched', function() {
+        $scope.datosSolicitud = JSON.parse( camForm.variableManager.variableValue('json') ) ;
+
+		var data = $scope.datosSolicitud.SolicitudTramite.DatosSolicitud.DocumentoAnexo;
+		console.log('Esta es la data');
+		console.log(data);
+		var dataURL=$scope.urls;
+
+		for (var i=0; i<data.length; i++){
+			var aux=data[i].tipoDocumento;
+			if(aux=='IDENTIFICACION'){
+				dataURL[0] = dataURL[0] + data[i].uuid;
+			}
+			else if(aux=='PAGO_DERECHOS'){
+				dataURL[1] = dataURL[1] + data[i].uuid;
+			}
+			else if(aux=='COMPROBANTE_DOMICILIO'){
+				dataURL[2] = dataURL[2] + data[i].uuid;
+			}
+			else if(aux=='RFC'){
+				dataURL[3] = dataURL[3] + data[i].uuid;
+			}
+			else if(aux=='PUNTO_PARTIDA'){
+				dataURL[4] = dataURL[4] + data[i].uuid;
+			}
+			else if(aux=='PLANO_INEGI'){
+				dataURL[5] = dataURL[5] + data[i].uuid;
+			}
+			else{
+			}
+		}
+
+		console.log($scope.datosSolicitud);
+        $scope.getType = function(obj){
+             return( typeof obj);
+         }
+
+
+     });
+
+  </script>
+
+   <div class="container">
+     <h3>Enviar Proposici&oacute;n a t&iacute;tulo</h3>
+      <div class="row">
+        <div class="col-md-6">
+          <h4>Datos del lote</h4>
+        </div>
+        <div class="col-md-6">
+          <h4 class="text-right">Folio: {{datosSolicitud.SolicitudTramite.folio}}</h4>
+        </div>
+      </div>
+      <hr class="red">
+<!--tercero panel colapsable-->
+    <div class="panel-group ficha-collapse" id="accordion">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            <a data-parent="#accordion" data-toggle="collapse" href="#panel-03" aria-expanded="true" aria-controls="panel-03">
+                l. Datos generales y ubicaci&oacute;n del lote solicitado
+            </a>
+          </h4>
+          <button type="button" class="collpase-button collapsed" data-parent="#accordion" data-toggle="collapse" href="#panel-03"></button>
+        </div>
+        <div class="panel-collapse collapse" id="panel-03">
+          <div class="panel-body">
+            <div class="row">
+                <div class="row">
+                  <div class="col-md-4">
+                      <label class="control-label" for="tipoTramite">Tipo de tr&aacute;mite:</label>
+                        <input class="form-control" id="tipoTramite" type="text" ng-model="datosSolicitud.SolicitudTramite.DatosSolicitud.Formulario.SolicitudConcesionMinera.tipoTramite" readonly/>
+                  </div>
+                </div>
+                  <div class="row">
+                    <div class="col-md-4">
+                      <label class="control-label" for="nombreLote">Nombre:</label>
+                        <input class="form-control" type="text" ng-model="datosSolicitud.SolicitudTramite.DatosSolicitud.Formulario.SolicitudConcesionMinera.DatosGeneralesUbicacion.nombre"readonly/>
+                    </div>
+                    <div class="col-md-4">
+                      <label class="control-label" for="superficie">Superficie (Has):</label>
+                        <input class="form-control" type="text" ng-model="datosSolicitud.SolicitudTramite.DatosSolicitud.Formulario.SolicitudConcesionMinera.DatosGeneralesUbicacion.numeroHectareas" readonly/>
+                    </div>
+                    <div class="col-md-4">
+                      <label class="control-label" for="municipioLote">Municipio o Alcald&iacute;a:</label>
+                        <input class="form-control" type="text" ng-model="datosSolicitud.SolicitudTramite.DatosSolicitud.Formulario.SolicitudConcesionMinera.DatosGeneralesUbicacion.municipio" readonly/>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-4">
+                      <label class="control-label" for="estadoLote">Estado:</label>
+                        <input class="form-control" type="text" ng-model="datosSolicitud.SolicitudTramite.DatosSolicitud.Formulario.SolicitudConcesionMinera.DatosGeneralesUbicacion.estado" readonly/>
+                    </div>
+                  </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+<!--cuarto panel colapsable-->
+    <div class="panel-group ficha-collapse" id="accordion">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            <a data-parent="#accordion" data-toggle="collapse" href="#panel-04" aria-expanded="true" aria-controls="panel-04">
+                ll. En su caso, nombre del lote y n&uacute;mero de expediente o t&iacute;tulo que amparaba con anterioridad el mismo
+            </a>
+          </h4>
+          <button type="button" class="collpase-button collapsed" data-parent="#accordion" data-toggle="collapse" href="#panel-04"></button>
+        </div>
+        <div class="panel-collapse collapse" id="panel-04">
+          <div class="panel-body">
+            <div class="row">
+                <div class="row">
+                  <div class="col-md-4">
+                    <label class="control-label" for="nombreLote">Nombre:</label>
+                      <input class="form-control" type="text" readonly/>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="control-label" for="expedienteA">Expediente a:</label>
+                      <input class="form-control" id="expedienteA" type="text" readonly/>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="control-label" for="numeroTitulo">N&uacute;mero de t&iacute;tulo:</label>
+                      <input class="form-control" id="numeroTitulo" type="text" readonly/>
+                  </div>
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+<!--quinto panel colapsable-->
+    <div class="panel-group ficha-collapse" id="accordion">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            <a data-parent="#accordion" data-toggle="collapse" href="#panel-05" aria-expanded="true" aria-controls="panel-05">
+                lll. Principales minerales o sustancias motivo de las obras y tabajos mineros
+            </a>
+          </h4>
+          <button type="button" class="collpase-button collapsed" data-parent="#accordion" data-toggle="collapse" href="#panel-05"></button>
+        </div>
+        <div class="panel-collapse collapse" id="panel-05">
+          <div class="panel-body">
+            <div class="row">
+              <div class="row">
+                <div class="col-md-4">
+                  <label class="control-label" for="sustancia">Minerales o sustancias: </label>
+                    <input class="form-control" id="sustancia" type="text" ng-model="datosSolicitud.SolicitudTramite.DatosSolicitud.Formulario.SolicitudConcesionMinera.sustancia" readonly/>
+                </div>
+              </div>
+            </div>
+          </div>
+          </div>
+        </div>
+      </div>
+<!--sexto panel colapsable-->
+    <div class="panel-group ficha-collapse" id="accordion">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            <a data-parent="#accordion" data-toggle="collapse" href="#panel-06" aria-expanded="true" aria-controls="panel-06">
+                lV. Ubicaci&oacute;n del punto de partida y referencias a lugares conocidos y centros de poblaci&oacute;n m&aacute;s cercanos
+            </a>
+          </h4>
+          <button type="button" class="collpase-button collapsed" data-parent="#accordion" data-toggle="collapse" href="#panel-06"></button>
+        </div>
+        <div class="panel-collapse collapse" id="panel-06">
+          <div class="panel-body">
+            <div class="row">
+                  <label class="control-label" for="locMojonera">La mojonera o señal reglamentaria se localiza en:</label>
+                    <textarea class="form-control" name="locMojonera" rows="3" cols="100" readonly></textarea>
+                  <label class="control-label" for="coordenadas">Coordenadas de ubicaci&oacute;n del punto de partida:</label>
+                    <textarea class="form-control" name="coordenadas" rows="3" cols="100" readonly></textarea>
+                <div class="row">
+                  <div class="col-md-4">
+                    <label class="control-label" for="distancia">Distancia:</label>
+                      <input class="form-control" id="distancia" type="text" readonly/>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="control-label" for="rumbo">Rumbo:</label>
+                      <input class="form-control" id="rumbo" type="text" readonly/>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="control-label" for="nombrePoblados">Nombre de poblados o accidentes topogr&aacute;ficos:</label>
+                      <input class="form-control" id="nombrePoblados" type="text" readonly/>
+                  </div>
+                </div>
+                  <label class="control-label" for="rutaPobladoCercano">Ruta de acceso al poblado m&aacute;s cercano:</label>
+                    <textarea class="form-control" name="rutaPobladoCercano" rows="3" cols="100" readonly></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+<!--septimo panel colapsable-->
+    <div class="panel-group ficha-collapse" id="accordion">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            <a data-parent="#accordion" data-toggle="collapse" href="#panel-07" aria-expanded="true" aria-controls="panel-07">
+                V. Ubicaci&oacute;n del punto de partida y referencias a lugares conocidos y centros de poblaci&oacute;n m&aacute;s cercanos
+            </a>
+          </h4>
+          <button type="button" class="collpase-button collapsed" data-parent="#accordion" data-toggle="collapse" href="#panel-07"></button>
+        </div>
+        <div class="panel-collapse collapse" id="panel-07">
+          <div class="panel-body">
+            <div class="row">
+                <p>Lados, rumbos, distancias horizontales  y en su caso, de la l&iacute;nea o l&iacute;neas auxiliares del punto de partida a dicho per&iacute;metro</p>
+                <div class="row">
+                  <div class="col-md-4">
+                    <label class="control-label" for="nombreLote">L&iacute;nea auxiliar del P.P.:</label>
+                      <input class="form-control" id="nombreLote" type="text" readonly/>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="control-label" for="superficie">al punto:</label>
+                      <input class="form-control" type="text" readonly/>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="control-label" for="municipioLote">Rbo.Gra.Min.Seg*:</label>
+                      <input class="form-control" type="text" readonly/>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="control-label" for="municipioLote">Mts*:</label>
+                      <input class="form-control" type="text" readonly/>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-4">
+                    <label class="control-label" for="nombreLote">L&iacute;nea auxiliar del punto:</label>
+                      <input class="form-control" type="text" readonly/>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="control-label" for="superficie">al punto:</label>
+                      <input class="form-control" type="text" readonly/>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="control-label" for="municipioLote">Rbo.Gra.Min.Seg:</label>
+                      <input class="form-control" type="text" readonly/>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="control-label" for="municipioLote">Mts:</label>
+                      <input class="form-control" type="text" readonly/>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-4">
+                    <label class="control-label" for="nombreLote">Lados:</label>
+                      <input class="form-control" type="text" readonly/>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="control-label" for="superficie">Rumbos(Rbo.Gra.Min.Seg):</label>
+                      <input class="form-control" type="text" readonly/>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="control-label" for="estadoLote">Distancia(Mts):</label>
+                      <input class="form-control" id="estadoLote" type="text" readonly/>
+                  </div>
+                </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<!--octavo panel colapsable-->
+    <div class="panel-group ficha-collapse" id="accordion">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            <a data-parent="#accordion" data-toggle="collapse" href="#panel-08" aria-expanded="true" aria-controls="panel-08">
+                Vl. Solicitud formulada para ejercer el derecho de pertenencia
+            </a>
+          </h4>
+          <button type="button" class="collpase-button collapsed" data-parent="#accordion" data-toggle="collapse" href="#panel-08"></button>
+        </div>
+        <div class="panel-collapse collapse" id="panel-08">
+          <div class="panel-body">
+            <div class="row">
+                <div class="row">
+                  <div class="col-md-8">
+                    <label class="control-label" for="superficie">Solicitud formulada para ejercer el derecho de preferencia:</label>
+                    <input class="form-control" id="superficie" type="text" readonly/>
+                  </div>
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+	<!-- Fin de los paneles colapsables-->
+<br><br>
+  <iframe frameborder="0" height="430" src="http://192.168.104.172:7001/miam/gateway/tareasComunes/consultaDocumento/3f0dc1f2-a9cb-465c-b71b-2782e4ecb412" width="100%"></iframe>
+  <br><br><br><br>
+</div>
+</form>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</body>
+</html>

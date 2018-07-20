@@ -1,0 +1,599 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset=utf-8>
+  <title>Enviar Proposici&oacute;n a t&iacute;tulo</title>
+</head>
+<body>
+
+  <link href="https://framework-gb.cdn.gob.mx/assets/styles/main.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="https://framework-gb.cdn.gob.mx/sso/css/plugin/fiel-sat/1.0/fiel-bootstrap.all.css" />
+<script type="text/javascript" language="javascript" src="https://framework-gb.cdn.gob.mx/sso/js/plugin/fiel-sat/1.0/sat-fiel-1.0.0.source.all.js"></script>
+
+<form role="form" class="form-horizontal">
+  <script cam-script type="text/form-script">
+    $scope.genders = [ 'female', 'male' ];
+	$scope.urls=['http://192.168.104.172:7001/miam/gateway/tareasComunes/consultaDocumento/',
+				'http://192.168.104.172:7001/miam/gateway/tareasComunes/consultaDocumento/',
+				'http://192.168.104.172:7001/miam/gateway/tareasComunes/consultaDocumento/',
+				'http://192.168.104.172:7001/miam/gateway/tareasComunes/consultaDocumento/',
+				'http://192.168.104.172:7001/miam/gateway/tareasComunes/consultaDocumento/',
+				'http://192.168.104.172:7001/miam/gateway/tareasComunes/consultaDocumento/',
+				'http://192.168.104.172:7001/miam/gateway/tareasComunes/consultaDocumento/'];
+    camForm.on('form-loaded', function() {
+           camForm.variableManager.fetchVariable('json');
+         });
+
+
+     camForm.on('variables-fetched', function() {
+        $scope.datosSolicitud = JSON.parse( camForm.variableManager.variableValue('json') ) ;
+
+		var data = $scope.datosSolicitud.SolicitudTramite.DatosSolicitud.DocumentoAnexo;
+		console.log('Esta es la data');
+		console.log(data);
+		var dataURL=$scope.urls;
+
+		for (var i=0; i<data.length; i++){
+			var aux=data[i].tipoDocumento;
+			if(aux=='IDENTIFICACION'){
+				dataURL[0] = dataURL[0] + data[i].uuid;
+			}
+			else if(aux=='PAGO_DERECHOS'){
+				dataURL[1] = dataURL[1] + data[i].uuid;
+			}
+			else if(aux=='COMPROBANTE_DOMICILIO'){
+				dataURL[2] = dataURL[2] + data[i].uuid;
+			}
+			else if(aux=='RFC'){
+				dataURL[3] = dataURL[3] + data[i].uuid;
+			}
+			else if(aux=='PUNTO_PARTIDA'){
+				dataURL[4] = dataURL[4] + data[i].uuid;
+			}
+			else if(aux=='PLANO_INEGI'){
+				dataURL[5] = dataURL[5] + data[i].uuid;
+			}
+			else{
+			}
+		}
+
+		console.log($scope.datosSolicitud);
+        $scope.getType = function(obj){
+             return( typeof obj);
+         }
+
+
+     });
+
+  </script>
+
+   <div class="container">
+      <div class="row">
+        <div class="col-md-6">
+          <h3>Enviar Proposici&oacute;n a t&iacute;tulo</h3>
+        </div>
+        <div class="col-md-6">
+          <h3 class="text-right">Folio: {{datosSolicitud.SolicitudTramite.folio}}</h3>
+        </div>
+      </div>
+      <hr class="red">
+<!--Primer panel colapsable-->
+    <div class="panel-group ficha-collapse" id="accordion">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            <a data-parent="#accordion" data-toggle="collapse" href="#panel-datos-generales" aria-expanded="true" aria-controls="panel-datos-generales">
+                l. Datos generales del solicitante
+            </a>
+          </h4>
+        <button type="button" class="collpase-button collapsed" data-parent="#accordion" data-toggle="collapse" href="#panel-datos-generales"></button>
+        </div>
+        <div class="panel-collapse collapse" id="panel-datos-generales">
+          <div class="panel-body">
+            <div class="row">
+                <h4 class="titulo">Datos de la persona f&iacute;sica o moral</h4>
+                <hr class="red">
+                <div class="">
+                  <div class="">
+                    <label class="control-label" for="curp">Clave &Uacute;nica de Registro de Poblaci&oacute;n (CURP):</label>
+                    <div class="input-group">
+                      <input class="form-control" id="curp" size="70" type="text" ng-model="datosSolicitud.SolicitudTramite.Solicitante.Persona.PersonaFisica.CURP" readonly/>
+                    </div>
+                  </div>
+                  <div class="">
+                    <label class="control-label" for="rfc">Registro Federal de Contribuyentes (RFC):</label>
+                    <div class="input-group">
+                      <input class="form-control" id="rfc" size="70" type="text" ng-model="datosSolicitud.SolicitudTramite.Solicitante.Persona.RFC" readonly/>
+                    </div>
+                  </div>
+                  <div class="">
+                    <label class="control-label" for="razonSocial">Denominaci&oacute;n o Raz&oacute;n Social:</label>
+                    <div class="input-group">
+                      <input class="form-control" id="razonSocial" size="91" type="text" ng-model="datosSolicitud.SolicitudTramite.DatosSolicitud.Formulario.SolicitudConcesionMinera.Concesionarios.Titular.Persona.razonSocial" readonly/>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class=" col-md-4">
+                      <label class="control-label" for="nombre">Nombre(s):</label>
+                        <input class="form-control" id="nombre" type="text" ng-model="datosSolicitud.SolicitudTramite.Solicitante.Persona.PersonaFisica.NombreCompleto.nombres" readonly/>
+                    </div>
+                    <div class="col-md-4">
+                      <label class="control-label" for="primerApellido">Primer Apellido:</label>
+                        <input class="form-control" id="primerApellido" type="text" ng-model="datosSolicitud.SolicitudTramite.Solicitante.Persona.PersonaFisica.NombreCompleto.primerApellido" readonly/>
+                    </div>
+                    <div class="col-md-4">
+                      <label class="control-label" for="segundoApellido">Segundo Apellido:</label>
+                        <input class="form-control" id="segundoApellido" type="text" ng-model="datosSolicitud.SolicitudTramite.Solicitante.Persona.PersonaFisica.NombreCompleto.segundoApellido" readonly/>
+                    </div>
+                    <div class="col-md-4">
+                      <label class="control-label" for="porcentaje">Porcentaje de participaci&oacute;n (%):</label>
+                      <input class="form-control" id="porcentaje" size="25" type="text" ng-model="datosSolicitud.SolicitudTramite.DatosSolicitud.Formulario.SolicitudConcesionMinera.Concesionarios.Titular.Participacion" readonly/>
+                    </div>
+                  </div>
+                </div>
+            </div>
+            <div class="row">
+                <h4 class="titulo">Datos de contacto</h4>
+                <hr class="red">
+                <div class="row">
+                  <div class="row">
+                    <div class="col-md-4">
+                      <div class="col-md-4">
+                        <label class="control-label" for="lada">Lada:</label>
+                        <div class="input-group">
+                          <input class="form-control" id="lada" type="text" ng-model="datosSolicitud.SolicitudTramite.Solicitante.DatosContacto.claveLada" readonly/>
+                        </div>
+                      </div>
+                      <div class="">
+                        <label class="control-label" for="telefonoFijo">Tel&eacute;fono fijo:</label>
+                        <div class="input-group">
+                          <input class="form-control" id="telefonoFijo" type="text" ng-model="datosSolicitud.SolicitudTramite.Solicitante.DatosContacto.telefono" readonly/>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <label class="control-label" for="extension">Extensi&oacute;n:</label>
+                      <input class="form-control" id="extension" type="text" ng-model="datosSolicitud.SolicitudTramite.Solicitante.DatosContacto.extension" readonly/>
+                      </div>
+                    <div class="col-md-4">
+                      <label class="control-label" for="telefonoMovil">Tel&eacute;fono movil:</label>
+                      <input class="form-control" id="telefonoMovil" type="text" ng-model="datosSolicitud.SolicitudTramite.Solicitante.DatosContacto.telefono" readonly/>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-4">
+                  <label class="control-label" for="email">Correo electr&oacute;nico:</label>
+                  <input class="form-control" id="email" type="text" ng-model="datosSolicitud.SolicitudTramite.Solicitante.DatosContacto.email" readonly/>
+                  </div>
+                </div>
+            </div>
+            <div class="row">
+                <h4 class="titulo">Datos de inscripci&oacute;n en el Registro Agrario Nacional para ejidos o comunidades agrarias o Registro p&uacute;blico de Miner&iacute;a para personas morales</h4>
+                <hr class="red">
+                <div class="row">
+                  <div class="col-md-4">
+                    <label class="control-label" for="acta">Acta:</label>
+                      <input class="form-control" id="acta" type="text" readonly/>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="control-label" for="volumen">Volumen:</label>
+                      <input class="form-control" id="volumen" type="text" readonly/>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="control-label" for="libro">Libro:</label>
+                      <input class="form-control" id="libro" type="text" readonly/>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="control-label" for="fecha">Fecha:</label>
+                    <input class="form-control" id="fecha" type="text" readonly/>
+                  </div>
+                </div>
+            </div>
+            <div class="row">
+                <h4 class="titulo">Domicilio para o&iacute;r y recibir notificaciones</h4>
+                <hr class="red">
+                <div class="row">
+                  <div class="col-md-4">
+                    <label class="control-label" for="codPostal">C&oacute;digo postal:</label>
+                      <input class="form-control" id="codPostal" type="text" ng-model="datosSolicitud.SolicitudTramite.Solicitante.Domicilio.codigoPostal" readonly/>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="control-label" for="estado">Estado:</label>
+                      <input class="form-control" id="estado" type="text" ng-model="datosSolicitud.SolicitudTramite.Solicitante.Domicilio.estado" readonly/>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="control-label" for="municipio">Municipio o Alcald&iacute;a:</label>
+                      <input class="form-control" id="municipio" type="text" ng-model="datosSolicitud.SolicitudTramite.Solicitante.Domicilio.municipio" readonly/>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-4">
+                    <label class="control-label" for="localidad">Localidad:</label>
+                      <input class="form-control" id="localidad" type="text" value="" readonly/>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="control-label" for="colonia">Colonia:</label>
+                      <input class="form-control" id="colonia" type="text" ng-model="datosSolicitud.SolicitudTramite.Solicitante.Domicilio.colonia" readonly/>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="control-label" for="tipoCalle">Tipo de calle:</label>
+                      <input class="form-control" id="tipoCalle" type="text" value="" readonly/>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="control-label" for="calle">Calle:</label>
+                      <input class="form-control" id="calle" type="text" ng-model="datosSolicitud.SolicitudTramite.Solicitante.Domicilio.calle" readonly/>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="control-label" for="noExt">N&uacute;mero exterior:</label>
+                      <input class="form-control" id="noExt" type="text" ng-model="datosSolicitud.SolicitudTramite.Solicitante.Domicilio.numeroExterior" readonly/>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="control-label" for="noInt">N&uacute;mero interior:</label>
+                      <input class="form-control" id="noInt" type="text" value="" readonly/>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="control-label" for="entreCalles">Entre que calles:</label>
+                    <input class="form-control" id="entreCalles" type="text" value="" readonly/>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="control-label" for="callePost">Calle posterior:</label>
+                    <input class="form-control" id="callePost" type="text" value="" readonly/>
+                  </div>
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+<!--segundo panel colapsable-->
+    <div class="panel-group ficha-collapse" id="accordion">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            <a data-parent="#accordion" data-toggle="collapse" href="#panel-02" aria-expanded="true" aria-controls="panel-02">
+                ll. Datos del representante legal
+            </a>
+          </h4>
+          <button type="button" class="collpase-button collapsed" data-parent="#accordion" data-toggle="collapse" href="#panel-02"></button>
+        </div>
+        <div class="panel-collapse collapse" id="panel-02">
+          <div class="panel-body">
+            <div class="row">
+                <h4>Datos de la persona f&iacute;sica</h4>
+                <hr class="red">
+                <div class="">
+                  <label class="control-label" for="rupaRepLegal">Registro &uacute;nico de Personas Acreditadas (RUPA):</label>
+                  <div class="input-group">
+                    <input class="form-control" id="rupa" size="70" type="text" value="" readonly/>
+                  </div>
+                </div>
+                <div class="">
+                  <label class="control-label" for="curpRepLegal">Clave &uacute;nica de Registro de Poblaci&oacute;n (CURP):</label>
+                  <div class="input-group">
+                    <input class="form-control" size="70" type="text" value="HERI860519HASRYV06" readonly/>
+                  </div>
+                </div>
+                <div class="">
+                  <label class="control-label" for="rfcRepLegal">Registro Federal de Contribuyentes (RFC):</label>
+                  <div class="input-group">
+                    <input class="form-control" id="rfcRepLegal" size="70" type="text" value="" readonly/>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-4">
+                    <label class="control-label" for="nombreRepLegal">Nombre(s):</label>
+                      <input class="form-control" id="nombreRepLegal" type="text" value="" readonly/>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="control-label" for="primerApellidoRepLegal">Primer Apellido:</label>
+                      <input class="form-control" id="primerApellidoRepLegal" type="text" value="" readonly/>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="control-label" for="segundoApellidoRepLegal">Segundo Apellido:</label>
+                      <input class="form-control" id="segundoApellidoRepLegal" type="text" value="" readonly/>
+                  </div>
+                </div>
+            </div>
+            <div class="row">
+                <h4>Datos de contacto del representante legal</h4>
+                <hr class="red">
+                <div class="row">
+                  <div class="row">
+                    <div class="col-md-4">
+                      <div class="col-md-4">
+                          <label class="control-label" for="ladaRepLegal">Lada:</label>
+                          <div class="input-group">
+                            <input class="form-control" id="ladaRepLegal" type="text" value="" readonly/>
+                          </div>
+                      </div>
+                          <label class="control-label" for="telefonoFijoRepLegal">Tel&eacute;fono fijo:</label>
+                          <div class="input-group">
+                            <input class="form-control" id="telefonoFijoRepLegal" type="text" value="" readonly/>
+                          </div>
+                    </div>
+                    <div class="col-md-4">
+                      <label class="control-label" for="extensionRepLegal">Extensi&oacute;n:</label>
+                        <input class="form-control" id="extensionRepLegal" type="text" value="" readonly/>
+                    </div>
+                    <div class="col-md-4">
+                      <label class="control-label" for="telefonoMovilRepLegal">Tel&eacute;fono movil:</label>
+                        <input class="form-control" id="telefonoMovilRepLegal" type="text" value="" readonly/>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-4">
+                    <label class="control-label" for="emailRepLegal">Correo electr&oacute;nico:</label>
+                      <input class="form-control" id="emailRepLegal" type="text" value="" readonly/>
+                  </div>
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+<!--tercero panel colapsable-->
+    <div class="panel-group ficha-collapse" id="accordion">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            <a data-parent="#accordion" data-toggle="collapse" href="#panel-03" aria-expanded="true" aria-controls="panel-03">
+                lll. Datos generales y ubicaci&oacute;n del lote solicitado
+            </a>
+          </h4>
+          <button type="button" class="collpase-button collapsed" data-parent="#accordion" data-toggle="collapse" href="#panel-03"></button>
+        </div>
+        <div class="panel-collapse collapse" id="panel-03">
+          <div class="panel-body">
+            <div class="row">
+                <div class="row">
+                  <div class="col-md-4">
+                      <label class="control-label" for="tipoTramite">Tipo de tr&aacute;mite:</label>
+                        <input class="form-control" id="tipoTramite" type="text" ng-model="datosSolicitud.SolicitudTramite.DatosSolicitud.Formulario.SolicitudConcesionMinera.tipoTramite" readonly/>
+                  </div>
+                </div>
+                  <div class="row">
+                    <div class="col-md-4">
+                      <label class="control-label" for="nombreLote">Nombre:</label>
+                        <input class="form-control" type="text" ng-model="datosSolicitud.SolicitudTramite.DatosSolicitud.Formulario.SolicitudConcesionMinera.DatosGeneralesUbicacion.nombre"readonly/>
+                    </div>
+                    <div class="col-md-4">
+                      <label class="control-label" for="superficie">Superficie (Has):</label>
+                        <input class="form-control" type="text" ng-model="datosSolicitud.SolicitudTramite.DatosSolicitud.Formulario.SolicitudConcesionMinera.DatosGeneralesUbicacion.numeroHectareas" readonly/>
+                    </div>
+                    <div class="col-md-4">
+                      <label class="control-label" for="municipioLote">Municipio o Alcald&iacute;a:</label>
+                        <input class="form-control" type="text" ng-model="datosSolicitud.SolicitudTramite.DatosSolicitud.Formulario.SolicitudConcesionMinera.DatosGeneralesUbicacion.municipio" readonly/>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-4">
+                      <label class="control-label" for="estadoLote">Estado:</label>
+                        <input class="form-control" type="text" ng-model="datosSolicitud.SolicitudTramite.DatosSolicitud.Formulario.SolicitudConcesionMinera.DatosGeneralesUbicacion.estado" readonly/>
+                    </div>
+                  </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+<!--cuarto panel colapsable-->
+    <div class="panel-group ficha-collapse" id="accordion">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            <a data-parent="#accordion" data-toggle="collapse" href="#panel-04" aria-expanded="true" aria-controls="panel-04">
+                lV. En su caso, nombre del lote y n&uacute;mero de expediente o t&iacute;tulo que amparaba con anterioridad el mismo
+            </a>
+          </h4>
+          <button type="button" class="collpase-button collapsed" data-parent="#accordion" data-toggle="collapse" href="#panel-04"></button>
+        </div>
+        <div class="panel-collapse collapse" id="panel-04">
+          <div class="panel-body">
+            <div class="row">
+                <div class="row">
+                  <div class="col-md-4">
+                    <label class="control-label" for="nombreLote">Nombre:</label>
+                      <input class="form-control" type="text" readonly/>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="control-label" for="expedienteA">Expediente a:</label>
+                      <input class="form-control" id="expedienteA" type="text" readonly/>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="control-label" for="numeroTitulo">N&uacute;mero de t&iacute;tulo:</label>
+                      <input class="form-control" id="numeroTitulo" type="text" readonly/>
+                  </div>
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+<!--quinto panel colapsable-->
+    <div class="panel-group ficha-collapse" id="accordion">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            <a data-parent="#accordion" data-toggle="collapse" href="#panel-05" aria-expanded="true" aria-controls="panel-05">
+                V. Principales minerales o sustancias motivo de las obras y tabajos mineros
+            </a>
+          </h4>
+          <button type="button" class="collpase-button collapsed" data-parent="#accordion" data-toggle="collapse" href="#panel-05"></button>
+        </div>
+        <div class="panel-collapse collapse" id="panel-05">
+          <div class="panel-body">
+            <div class="row">
+              <div class="row">
+                <div class="col-md-4">
+                  <label class="control-label" for="sustancia">Minerales o sustancias: </label>
+                    <input class="form-control" id="sustancia" type="text" ng-model="datosSolicitud.SolicitudTramite.DatosSolicitud.Formulario.SolicitudConcesionMinera.sustancia" readonly/>
+                </div>
+              </div>
+            </div>
+          </div>
+          </div>
+        </div>
+      </div>
+<!--sexto panel colapsable-->
+    <div class="panel-group ficha-collapse" id="accordion">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            <a data-parent="#accordion" data-toggle="collapse" href="#panel-06" aria-expanded="true" aria-controls="panel-06">
+                Vl. Ubicaci&oacute;n del punto de partida y referencias a lugares conocidos y centros de poblaci&oacute;n m&aacute;s cercanos
+            </a>
+          </h4>
+          <button type="button" class="collpase-button collapsed" data-parent="#accordion" data-toggle="collapse" href="#panel-06"></button>
+        </div>
+        <div class="panel-collapse collapse" id="panel-06">
+          <div class="panel-body">
+            <div class="row">
+                  <label class="control-label" for="locMojonera">La mojonera o señal reglamentaria se localiza en:</label>
+                    <textarea class="form-control" name="locMojonera" rows="3" cols="100" readonly></textarea>
+                  <label class="control-label" for="coordenadas">Coordenadas de ubicaci&oacute;n del punto de partida:</label>
+                    <textarea class="form-control" name="coordenadas" rows="3" cols="100" readonly></textarea>
+                <div class="row">
+                  <div class="col-md-4">
+                    <label class="control-label" for="distancia">Distancia:</label>
+                      <input class="form-control" id="distancia" type="text" readonly/>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="control-label" for="rumbo">Rumbo:</label>
+                      <input class="form-control" id="rumbo" type="text" readonly/>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="control-label" for="nombrePoblados">Nombre de poblados o accidentes topogr&aacute;ficos:</label>
+                      <input class="form-control" id="nombrePoblados" type="text" readonly/>
+                  </div>
+                </div>
+                  <label class="control-label" for="rutaPobladoCercano">Ruta de acceso al poblado m&aacute;s cercano:</label>
+                    <textarea class="form-control" name="rutaPobladoCercano" rows="3" cols="100" readonly></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+<!--septimo panel colapsable-->
+    <div class="panel-group ficha-collapse" id="accordion">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            <a data-parent="#accordion" data-toggle="collapse" href="#panel-07" aria-expanded="true" aria-controls="panel-07">
+                Vll. Ubicaci&oacute;n del punto de partida y referencias a lugares conocidos y centros de poblaci&oacute;n m&aacute;s cercanos
+            </a>
+          </h4>
+          <button type="button" class="collpase-button collapsed" data-parent="#accordion" data-toggle="collapse" href="#panel-07"></button>
+        </div>
+        <div class="panel-collapse collapse" id="panel-07">
+          <div class="panel-body">
+            <div class="row">
+                <p>Lados, rumbos, distancias horizontales  y en su caso, de la l&iacute;nea o l&iacute;neas auxiliares del punto de partida a dicho per&iacute;metro</p>
+                <div class="row">
+                  <div class="col-md-4">
+                    <label class="control-label" for="nombreLote">L&iacute;nea auxiliar del P.P.:</label>
+                      <input class="form-control" id="nombreLote" type="text" readonly/>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="control-label" for="superficie">al punto:</label>
+                      <input class="form-control" type="text" readonly/>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="control-label" for="municipioLote">Rbo.Gra.Min.Seg*:</label>
+                      <input class="form-control" type="text" readonly/>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="control-label" for="municipioLote">Mts*:</label>
+                      <input class="form-control" type="text" readonly/>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-4">
+                    <label class="control-label" for="nombreLote">L&iacute;nea auxiliar del punto:</label>
+                      <input class="form-control" type="text" readonly/>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="control-label" for="superficie">al punto:</label>
+                      <input class="form-control" type="text" readonly/>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="control-label" for="municipioLote">Rbo.Gra.Min.Seg:</label>
+                      <input class="form-control" type="text" readonly/>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="control-label" for="municipioLote">Mts:</label>
+                      <input class="form-control" type="text" readonly/>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-4">
+                    <label class="control-label" for="nombreLote">Lados:</label>
+                      <input class="form-control" type="text" readonly/>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="control-label" for="superficie">Rumbos(Rbo.Gra.Min.Seg):</label>
+                      <input class="form-control" type="text" readonly/>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="control-label" for="estadoLote">Distancia(Mts):</label>
+                      <input class="form-control" id="estadoLote" type="text" readonly/>
+                  </div>
+                </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<!--octavo panel colapsable-->
+    <div class="panel-group ficha-collapse" id="accordion">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            <a data-parent="#accordion" data-toggle="collapse" href="#panel-08" aria-expanded="true" aria-controls="panel-08">
+                Vlll. Solicitud formulada para ejercer el derecho de pertenencia
+            </a>
+          </h4>
+          <button type="button" class="collpase-button collapsed" data-parent="#accordion" data-toggle="collapse" href="#panel-08"></button>
+        </div>
+        <div class="panel-collapse collapse" id="panel-08">
+          <div class="panel-body">
+            <div class="row">
+                <div class="row">
+                  <div class="col-md-8">
+                    <label class="control-label" for="superficie">Solicitud formulada para ejercer el derecho de preferencia:</label>
+                    <input class="form-control" id="superficie" type="text" readonly/>
+                  </div>
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+	<!-- Fin de los paneles colapsables-->
+<br><br>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th class="text-center" scope="col"><h4>Tipo de solicitud</h4></th>
+        <th class="text-center" scope="col"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="text-center">Seleccione tipo de solicitud</td>
+        <td class="text-center">
+          <select class="form-control" name="complejidad" cam-variable-name="complejidad" cam-variable-type="String">
+            <option value="compleja">Compleja</option>
+            <option value="regular">Regular</option>
+          </select>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <br><br><br><br>
+</div>
+</form>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</body>
+</html>
